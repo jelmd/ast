@@ -62,7 +62,6 @@ mcfind(const char* locale, const char* catalog, int category, int nls, char* pat
 	register char*		p;
 	register const char*	v;
 	int			i;
-	int			first;
 	int			next;
 	int			oerrno;
 	Lc_t*			lc;
@@ -93,9 +92,8 @@ mcfind(const char* locale, const char* catalog, int category, int nls, char* pat
 	paths[i++] = "lib/locale/%l/%C/%N";
 	paths[i] = 0;
 	next = 1;
-	for (i = 0; p = paths[i]; i += next)
+	for (i = 0; p = paths[i]; i++)
 	{
-		first = 1;
 		e = &file[elementsof(file) - 1];
 		while (*p)
 		{
@@ -121,21 +119,7 @@ mcfind(const char* locale, const char* catalog, int category, int nls, char* pat
 							v = catalog;
 							break;
 						case 'L':
-							if (first)
-							{
-								first = 0;
-								if (next)
-								{
-									v = lc->code;
-									if (lc->code != lc->language->code)
-										next = 0;
-								}
-								else
-								{
-									next = 1;
-									v = lc->language->code;
-								}
-							}
+							v = lc->code;
 							break;
 						case 'l':
 							v = lc->language->code;
