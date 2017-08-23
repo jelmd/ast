@@ -15,6 +15,6 @@ After cloning this repo, cd to the top directory of it and run:
 Almost all the tools in this package (including the bin/package script are
 self-documenting; run <tool> --man (or --html) for the man page for the tool.
 
-(If you were used to the old AST packaging mechanism, on www.research.att.com,
+(If you were used to the old AST packaging mechanism, on [www.research.att.com](https://web.archive.org/web/20151104235435/http://www2.research.att.com/%7Eastopen/download/),
 this repo is equivalent to downloading the INIT and ast-open packages and
 running: ./bin/package read on them).
