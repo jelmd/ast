@@ -64,7 +64,6 @@ mcfind(const char* locale, const char* catalog, int category, int nls, char* pat
 	int			i;
 	int			first;
 	int			next;
-	int			last;
 	int			oerrno;
 	Lc_t*			lc;
 	char			file[PATH_MAX];
@@ -97,7 +96,6 @@ mcfind(const char* locale, const char* catalog, int category, int nls, char* pat
 	for (i = 0; p = paths[i]; i += next)
 	{
 		first = 1;
-		last = 0;
 		e = &file[elementsof(file) - 1];
 		while (*p)
 		{
@@ -150,8 +148,6 @@ mcfind(const char* locale, const char* catalog, int category, int nls, char* pat
 							break;
 						case 'C':
 						case_C:
-							if (!catalog)
-								last = 1;
 							v = lc_categories[category].name;
 							break;
 						default:
@@ -164,11 +160,11 @@ mcfind(const char* locale, const char* catalog, int category, int nls, char* pat
 					}
 					continue;
 				case '/':
-					if (last)
-						break;
 					if (category != AST_LC_MESSAGES && strneq(p, lc_messages, sizeof(lc_messages) - 1) && p[sizeof(lc_messages)-1] == '/')
 					{
 						p += sizeof(lc_messages) - 1;
+						if (s < e)
+							*s++ = c;
 						goto case_C;
 					}
 					/*FALLTHROUGH*/
@@ -185,6 +181,13 @@ mcfind(const char* locale, const char* catalog, int category, int nls, char* pat
 				continue;
 			else
 				strlcpy(file, catalog, elementsof(file));
+
+			if (strchr(file, '/') == NULL) {
+				/* avoid picking up regular binaries from ${PATH} as catalog */
+				memmove(file+2, file, elementsof(file) - 2);
+				file[0] = '.' ; file[1] = '/'; file[elementsof(file)-1] = '\0';
+			}
+
 			if (ast.locale.set & AST_LC_find)
 				sfprintf(sfstderr, "locale find %s\n", file);
 			if (s = pathpath(file, "", (!catalog && category == AST_LC_MESSAGES) ? PATH_READ : (PATH_REGULAR|PATH_READ|PATH_ABSOLUTE), path, size))

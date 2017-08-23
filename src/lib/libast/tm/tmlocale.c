@@ -574,7 +574,8 @@ load(Lc_info_t* li)
 	tm_info.format = tm_data.format;
 	if (!(tm_info.deformat = state.format))
 		tm_info.deformat = tm_info.format[TM_DEFAULT];
-	if (mcfind(NiL, NiL, LC_TIME, 0, path, sizeof(path)) && (sp = sfopen(NiL, path, "r")))
+	/* 'ksh93_tm' hopefully does not resolve to a regular executable file */
+	if (mcfind(NiL, "ksh93_tm", LC_TIME, 0, path, sizeof(path)) && (sp = sfopen(NiL, path, "r")))
 	{
 		n = sfsize(sp);
 		tp = 0;
